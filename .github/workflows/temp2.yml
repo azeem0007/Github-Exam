@@ -22,7 +22,7 @@ jobs:
         run: |
           docker build -t ${{ env.REGISTRY }}/${{ github.repository_owner }}/github-exam:latest .
           docker tag ${{ env.REGISTRY }}/${{ github.repository_owner }}/github-exam:latest \
-                     ${{ env.REGISTRY }}/${{ github.repository_owner }}/github-exam:${{ github.ref_name }}
+                     ${{ env.REGISTRY }}/${{ github.repository_owner }}/github-exam:1.0.0
 
       - name: List images
         run: docker images
