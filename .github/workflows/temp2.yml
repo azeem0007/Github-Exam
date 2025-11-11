@@ -2,7 +2,7 @@ name: Runner + Service Container
 
 on:
   push:
-    branches: [main]
+    branches: [main,dev]
 
 jobs:
   build:
