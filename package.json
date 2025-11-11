@@ -1,5 +1,5 @@
 {
-  "name": "exam",
+  "name": "@azeem0007/exam",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -20,5 +20,8 @@
   "homepage": "https://github.com/azeem0007/Github-Exam#readme",
   "dependencies": {
     "@actions/core": "^1.11.1"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   }
 }

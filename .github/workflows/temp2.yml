@@ -1,23 +1,29 @@
-name: Build Script Workflow
+name: Publish Package
 
 on:
   push:
-    branches: [ main,dev ]
+    branches: [main,dev]
+      
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run inline script
-        run: |
-          echo "Starting build..."
-          mkdir -p build
-          echo "Build folder created"
-      - name: perms
-        run: chmod +x ./scripts/build.sh
-      - name: Run external script
-        run: ./scripts/build.sh
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com/'
 
+      - name: Authenticate to GitHub Packages
+        run: npm config set //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Publish package
+        run: npm publish
