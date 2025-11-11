@@ -2,7 +2,7 @@ name: Conditional Steps Example
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, dev ]
 
 jobs:
   test-and-deploy:
