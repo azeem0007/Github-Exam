@@ -1,0 +1,56 @@
+name: Build and Publish Release
+
+# Trigger on tags like v1.0.0
+on:
+  push:
+    tags:
+      - 'v*'   # matches v1, v1.0.0, v2.1, etc.
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write   # allow publishing packages / packages write for registry if needed
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'  # choose appropriate version
+
+      - name: Install build tooling
+        run: python -m pip install --upgrade pip build
+
+      - name: Build sdist and wheel
+        run: python -m build --sdist --wheel --outdir dist
+
+      - name: List dist
+        run: ls -la dist
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          body: |
+            Automated release for tag ${{ github.ref_name }}.
+          draft: false
+          prerelease: false
+
+      - name: Upload release artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist
+          asset_name: samplepkg-${{ github.ref_name }}.zip
+          asset_content_type: application/zip

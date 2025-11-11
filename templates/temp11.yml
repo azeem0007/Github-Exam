@@ -1,0 +1,24 @@
+name: to use Code QL
+on:
+  push:
+    branches: [main,dev]
+  pull_request:
+    branches: [main,dev]
+jobs:
+  build:
+    runs-on:  ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      security-events: write 
+    steps:
+      - name: check out the code
+        uses: actions/checkout@v4
+      - name: intialize code QL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: "python"
+      # - name: Autobuild for compiled languages
+      #   uses: github/codeql-action/autobuild@v3
+      - name: Analysis
+        uses: github/codeql-action/analyze@v3

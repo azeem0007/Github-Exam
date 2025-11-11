@@ -1,24 +1,30 @@
-name: to use Code QL
+name: to use OIDC and a cloud provider
 on:
   push:
-    branches: [main,dev]
-  pull_request:
-    branches: [main,dev]
+    tags:
+      - 'v*'
 jobs:
   build:
     runs-on:  ubuntu-latest
     permissions:
       contents: read
-      actions: read
-      security-events: write 
+      id-token: write
     steps:
-      - name: check out the code
+      - name: checkout the code
         uses: actions/checkout@v4
-      - name: intialize code QL
-        uses: github/codeql-action/init@v3
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          languages: "python"
-      # - name: Autobuild for compiled languages
-      #   uses: github/codeql-action/autobuild@v3
-      - name: Analysis
-        uses: github/codeql-action/analyze@v3
+          python-version: '3.11'
+      - name: auth to aws usinf OPENID CONNECT
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::618480995889:role/test-admin-access
+          aws-region: us-east-1
+      - name: Build the project
+        run: |
+          mkdir -p dist
+          zip -r dist/app-${{ github.ref_name }}.zip ./src/ 
+      - name: upload to s3
+        run: |
+          aws s3 cp dist/app-${{ github.ref_name }}.zip s3://azeem-bukcet-7301245/releases/
