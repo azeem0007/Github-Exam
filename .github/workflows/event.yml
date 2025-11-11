@@ -13,4 +13,6 @@ jobs:
         steps:
             - name: testing events
               run: echo "$GITHUB_TOKEN"
+            - name: dev branch
+              run: echo "this is dev branch"
     
