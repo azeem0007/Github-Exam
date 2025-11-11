@@ -1,22 +1,35 @@
-name: Auto Run Tests on Pull Request
+name: Dependent Jobs Example
+
 on:
-  pull_request:
-    branches:
-      - main
+  push:
+    branches: [ main ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
+      - name: Checkout code
         uses: actions/checkout@v4
-      - name: nodejs setup
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-      - name: dependencies
-        run: npm ci 
-      - name: comment
-        uses: peter-evans/create-or-update-comment@v5
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: "✅ All tests passed for this PR!"
+      - name: Build project
+        run: echo "Building project..."
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Run tests
+        run: echo "Running tests after build..."
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Deploy application
+        run: echo "Deploying application after successful tests..."
+
+  final:
+    runs-on:  ubuntu-latest
+    needs: [build,test,deploy]
+    steps:
+      - name: checker
+        run: echo "FINAL JOB IS DONE"
