@@ -1,44 +1,30 @@
-name: Using GHCR
+name: Runner + Service Container
 
 on:
   push:
-    branches: [main, dev]
-
-env:
-  IMAGE_NAME: python-image
-  REGISTRY: ghcr.io
-permissions:
-  contents: read
-  packages: write
+    branches: [main]
 
 jobs:
-  build-image:
+  build:
     runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: mysql:8.1
+        env:
+          MYSQL_ROOT_PASSWORD: yoyoy
+          MYSQL_DATABASE: testdb
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -pyoyoy"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build Docker image
+      - name: Test connection to MySQL
         run: |
-          docker build -t ${{ env.REGISTRY }}/${{ github.repository_owner }}/github-exam:latest .
-          docker tag ${{ env.REGISTRY }}/${{ github.repository_owner }}/github-exam:latest \
-                     ${{ env.REGISTRY }}/${{ github.repository_owner }}/github-exam:1.0.0
-
-      - name: List images
-        run: docker images
-
-      # - name: Login to GHCR
-      #   uses: docker/login-action@v3
-      #   with:
-      #     registry: ${{ env.REGISTRY }}
-      #     username: ${{ github.actor }}
-      #     password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Log in to registry
-        run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Push images
-        run: |
-          docker push ${{ env.REGISTRY }}/${{ github.repository_owner }}/github-exam:latest
-          docker push ${{ env.REGISTRY }}/${{ github.repository_owner }}/github-exam:1.0.0
+          echo "Connecting to MySQL at host 'db'"
+          mysql -h db -P 3306 -uroot -pyoyoy -e "SHOW DATABASES;"
