@@ -7,6 +7,9 @@ on:
 env:
   IMAGE_NAME: python-image
   REGISTRY: ghcr.io
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   build-image:
