@@ -14,10 +14,8 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: yoyoy
           MYSQL_DATABASE: testdb
-        ports:
-          - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping -h localhost -pyoyoy"
+          --health-cmd="mysqladmin ping -h db -pyoyoy"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -29,4 +27,5 @@ jobs:
       - name: Test connection to MySQL
         run: |
           echo "Connecting to MySQL at host 'db'"
-          mysql -h localhost -P 3306 -uroot -pyoyoy -e "SHOW DATABASES;"
+          mysql -h db -P 3306 -uroot -pyoyoy -e "SHOW DATABASES;"
+
