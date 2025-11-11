@@ -1,59 +1,21 @@
-name: Dependent Jobs Example
+name: Use GITHUB_TOKEN Example
 
 on:
-  push:
-    branches: [ main,dev ]
+  pull_request:
+    branches: [main]
 
 jobs:
-  build:
+  comment:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Build project
-        run: echo "Building project..."
-      - name: Print GitHub Actions environment variables
-        id: print_env
-        run: |
-          echo "GITHUB_REPOSITORY: ${{ github.repository }}"
-          echo "GITHUB_REF: $GITHUB_REF"
-          echo "GITHUB_SHA: ${{ github.sha }}"
-          echo "GITHUB_RUN_ID: $GITHUB_RUN_ID"
-          echo "GITHUB_RUN_NUMBER: $GITHUB_RUN_NUMBER"
-          echo "GITHUB_WORKFLOW: $GITHUB_WORKFLOW"
-          echo "GITHUB_JOB: $GITHUB_JOB"
-          echo "GITHUB_ACTOR: $GITHUB_ACTOR"
-          echo "RUNNER_NAME: $RUNNER_NAME"
-          echo "RUNNER_OS: $RUNNER_OS"
-          echo "RUNNER_ARCH: $RUNNER_ARCH"
-          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-          echo "GITHUB_ACTION: $GITHUB_ACTION"
-          echo "GITHUB_ACTIONS: $GITHUB_ACTIONS"
 
-
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Run tests
-        run: echo "Running tests after build..."
-      
-
-
-         
-
-
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - name: Deploy application
-        run: echo "Deploying application after successful tests..."
-
-  final:
-    runs-on:  ubuntu-latest
-    needs: [build,test,deploy]
-    steps:
-      - name: checker
-        run: echo "FINAL JOB IS DONE"
+      - name: Comment on PR
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: "✅ Workflow ran successfully!"
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: token
+        run: echo "${{ secrets.GITHUB_TOKEN }}"
