@@ -1,15 +1,26 @@
-name: Use GITHUB_TOKEN Example
+name: Set Env Using Workflow Command
 
 on:
-  pull_request:
-    branches: [main,dev]
+  push:
+    branches: [ main , dev]
 
 jobs:
-  comment:
+  dynamic-env:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: token
-        run: echo "${{ secrets.GITHUB_TOKEN }}"
 
+      - name: Generate timestamp
+        run: |
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          echo "BUILD_TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
+
+      - name: Print dynamic env variable
+        run: |
+         echo "Build timestamp: $BUILD_TIMESTAMP"
+
+      - name: Use dynamic variable in command
+        run: |
+          mkdir "release-$BUILD_TIMESTAMP"
+          echo "Created folder release-$BUILD_TIMESTAMP"
