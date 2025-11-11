@@ -22,9 +22,3 @@ jobs:
       #   uses: github/codeql-action/autobuild@v3
       - name: Analysis
         uses: github/codeql-action/analyze@v3
-      - name: download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: python.sarif
-      - name: ls
-        run: ls /home/runner/work/Github-Exam/results/
