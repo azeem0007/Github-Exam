@@ -2,7 +2,7 @@ name: Runner + Service Container
 
 on:
   push:
-    branches: [main,dev]
+    branches: [main, dev]
 
 jobs:
   build:
@@ -14,8 +14,10 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: yoyoy
           MYSQL_DATABASE: testdb
+        ports:
+          - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping -h db -pyoyoy"
+          --health-cmd="mysqladmin ping -h db -uroot -pyoyoy"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -24,8 +26,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Wait for MySQL service
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h db -uroot -pyoyoy &> /dev/null; then
+              echo "MySQL is up!"
+              break
+            fi
+            echo "Waiting for MySQL..."
+            sleep 5
+          done
+
       - name: Test connection to MySQL
         run: |
           echo "Connecting to MySQL at host 'db'"
           mysql -h db -P 3306 -uroot -pyoyoy -e "SHOW DATABASES;"
-
