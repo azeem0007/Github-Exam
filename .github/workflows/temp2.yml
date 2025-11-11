@@ -15,7 +15,7 @@ jobs:
         run: npm ci
 
       - name: Deploy to staging
-        if: github.ref == 'refs/heads/develop' && success()
+        if: github.ref == 'refs/heads/dev' && success()
         run: echo "Deploying to staging environment..."
 
       - name: current head
