@@ -14,6 +14,8 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: yoyoy
           MYSQL_DATABASE: testdb
+        ports:
+          - 3306:3306
         options: >-
           --health-cmd="mysqladmin ping -h localhost -pyoyoy"
           --health-interval=10s
