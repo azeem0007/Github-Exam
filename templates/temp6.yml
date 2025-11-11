@@ -1,0 +1,22 @@
+name: Build Script Workflow
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run inline script
+        run: |
+          echo "Starting build..."
+          mkdir -p build
+          echo "Build folder created"
+      - name: perms
+        run: chmod +x ./scripts/build.sh
+      - name: Run external script
+        run: ./scripts/build.sh
