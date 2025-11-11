@@ -14,30 +14,24 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: yoyoy
           MYSQL_DATABASE: testdb
-        ports:
-          - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping -h db -uroot -pyoyoy"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+          --health-cmd="mysqladmin ping -h localhost -pyoyoy"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=20
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Wait for MySQL service
+      - name: Install MySQL client
+        run: sudo apt-get update && sudo apt-get install -y mysql-client
+
+      - name: Wait for MySQL
         run: |
-          for i in {1..30}; do
-            if mysqladmin ping -h db -uroot -pyoyoy &> /dev/null; then
-              echo "MySQL is up!"
-              break
-            fi
+          until mysqladmin ping -h db -pyoyoy; do
             echo "Waiting for MySQL..."
-            sleep 5
+            sleep 2
           done
 
-      - name: Test connection to MySQL
-        run: |
-          echo "Connecting to MySQL at host 'db'"
-          mysql -h db -P 3306 -uroot -pyoyoy -e "SHOW DATABASES;"
+      - name: Test connection
+        run: mysql -h db -P 3306 -uroot -pyoyoy -e "SHOW DATABASES;"
