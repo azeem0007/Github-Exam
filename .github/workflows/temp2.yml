@@ -27,4 +27,4 @@ jobs:
       - name: Test connection to MySQL
         run: |
           echo "Connecting to MySQL at host 'db'"
-          mysql -h db -P 3306 -uroot -pyoyoy -e "SHOW DATABASES;"
+          mysql -h localhost -P 3306 -uroot -pyoyoy -e "SHOW DATABASES;"
