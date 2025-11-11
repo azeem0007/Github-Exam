@@ -1,26 +1,23 @@
-name: Set Env Using Workflow Command
+name: Build Script Workflow
 
 on:
   push:
-    branches: [ main , dev]
+    branches: [ main,dev ]
 
 jobs:
-  dynamic-env:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Generate timestamp
+      - name: Run inline script
         run: |
-          TIMESTAMP=$(date +%Y%m%d%H%M%S)
-          echo "BUILD_TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
+          echo "Starting build..."
+          mkdir -p build
+          echo "Build folder created"
+      - name: perms
+        run: chmod +x ./scripts/build.sh
+      - name: Run external script
+        run: ./scripts/build.sh
 
-      - name: Print dynamic env variable
-        run: |
-         echo "Build timestamp: $BUILD_TIMESTAMP"
-
-      - name: Use dynamic variable in command
-        run: |
-          mkdir "release-$BUILD_TIMESTAMP"
-          echo "Created folder release-$BUILD_TIMESTAMP"
