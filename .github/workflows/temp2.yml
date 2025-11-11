@@ -19,7 +19,8 @@ jobs:
           --health-interval=5s
           --health-timeout=3s
           --health-retries=20
-
+    container:
+      image: python:3.14.0
     steps:
       - uses: actions/checkout@v4
 
