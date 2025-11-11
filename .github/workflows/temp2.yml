@@ -1,44 +1,30 @@
-name: Using GHCR
-
+name: to use Code QL
 on:
   push:
-    branches: [main, dev]
-
-env:
-  IMAGE_NAME: python-image
-  REGISTRY: ghcr.io
-permissions:
-  contents: read
-  packages: write
-
+    branches: [main,dev]
+  pull_request:
+    branches: [main,dev]
 jobs:
-  build-image:
-    runs-on: ubuntu-latest
+  build:
+    runs-on:  ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      security-events: write 
     steps:
-      - name: Checkout code
+      - name: check out the code
         uses: actions/checkout@v4
-
-      - name: Build Docker image
-        run: |
-          docker build -t ${{ env.REGISTRY }}/${{ github.repository_owner }}/github-exam:latest .
-          docker tag ${{ env.REGISTRY }}/${{ github.repository_owner }}/github-exam:latest \
-                     ${{ env.REGISTRY }}/${{ github.repository_owner }}/github-exam:1.0.0
-
-      - name: List images
-        run: docker images
-
-      # - name: Login to GHCR
-      #   uses: docker/login-action@v3
-      #   with:
-      #     registry: ${{ env.REGISTRY }}
-      #     username: ${{ github.actor }}
-      #     password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Log in to registry
-        run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Push images
-        run: |
-          docker push ${{ env.REGISTRY }}/${{ github.repository_owner }}/github-exam:latest
-          docker push ${{ env.REGISTRY }}/${{ github.repository_owner }}/github-exam:1.0.0
+      - name: intialize code QL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: "python"
+      # - name: Autobuild for compiled languages
+      #   uses: github/codeql-action/autobuild@v3
+      - name: Analysis
+        uses: github/codeql-action/analyze@v3
+      - name: download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: python.sarif
+      - name: ls
+        run: ls /home/runner/work/Github-Exam/results/
