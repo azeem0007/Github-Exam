@@ -1,11 +1,12 @@
-name: Configure workflows to run for scheduled events
+name: Configure workflows to run for webhook events (e.g., check_run, check_suite, deployment, etc.)
 on:
-  schedule:
-    - cron: "0/3 * * * *"
-  workflow_dispatch:
+  check_run:
+    types: [completed]  # Trigger when a check completes
+
 jobs:
-  test:
+  notify-check:
     runs-on: ubuntu-latest
     steps:
-      - name: checking schedule
-        run:  echo "hii :)"
+      - run: |
+          echo "Check Run Completed!"
+          echo "Check Conclusion: ${{ github.event.check_run.conclusion }}"

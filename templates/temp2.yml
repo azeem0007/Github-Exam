@@ -1,0 +1,11 @@
+name: Configure workflows to run for scheduled events
+on:
+  schedule:
+    - cron: "0/3 * * * *"
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checking schedule
+        run:  echo "hii :)"
