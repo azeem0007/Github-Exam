@@ -1,0 +1,30 @@
+name: Conditional Steps Example
+
+on:
+  push:
+    branches: [ main, dev ]
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Deploy to staging
+        if: github.ref == 'refs/heads/dev' && success()
+        run: echo "Deploying to staging environment..."
+
+      - name: current head
+        run: echo "${{github.ref}}"
+
+      - name: Deploy to production
+        if: github.ref == 'refs/heads/main' && success()
+        run: echo "Deploying to production environment..."
+
+      - name: Notify on failure
+        if: failure()
+        run: echo "Tests failed! Notifying the team..."
