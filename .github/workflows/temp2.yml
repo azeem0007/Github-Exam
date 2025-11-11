@@ -1,38 +1,19 @@
-name: Runner + Service Container
-
+name: to use Code QL
 on:
   push:
-    branches: [main, dev]
-
+    branches: [main,dev]
 jobs:
   build:
-    runs-on: ubuntu-latest
-
-    services:
-      db:
-        image: mysql:8.1
-        env:
-          MYSQL_ROOT_PASSWORD: yoyoy
-          MYSQL_DATABASE: testdb
-        options: >-
-          --health-cmd="mysqladmin ping -h localhost -pyoyoy"
-          --health-interval=5s
-          --health-timeout=3s
-          --health-retries=20
-    container:
-      image: python:3.14.0
+    runs-on:  ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Install MySQL client
-        run: apt-get update && apt-get install -y mariadb-client
-
-      - name: Wait for MySQL
-        run: |
-          until mysqladmin ping -h db -pyoyoy; do
-            echo "Waiting for MySQL..."
-            sleep 2
-          done
-
-      - name: Test connection
-        run: mysql -h db -P 3306 -uroot -pyoyoy -e "SHOW DATABASES;"
+      - name: check out the code
+        uses: actions/checkout@v4
+      - name: intialize code QL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: "python"
+      # - name: Autobuild for compiled languages
+      #   uses: github/codeql-action/autobuild@v3
+      - name: Analysis
+        uses: github/codeql-action/analyze@v3
+          
