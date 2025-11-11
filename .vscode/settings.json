@@ -1,0 +1,29 @@
+{
+  // Disable automatic inline and popup suggestions while typing
+  "editor.quickSuggestions": {
+    "other": false,
+    "comments": false,
+    "strings": false
+  },
+
+  // Do not trigger suggestions on characters like '.'
+  "editor.suggestOnTriggerCharacters": false,
+
+  // Disable word-based suggestions
+  "editor.wordBasedSuggestions": "off",
+
+  // Disable inline (ghost) suggestions
+  "editor.inlineSuggest.enabled": false,
+
+  // Turn off parameter hints and accepting suggestions with Enter
+  "editor.parameterHints.enabled": false,
+  "editor.acceptSuggestionOnEnter": "off",
+
+  // Reduce extra suggestion behavior
+  "editor.suggest.showWords": false,
+  "editor.suggest.insertMode": "replace",
+
+  // If you use GitHub Copilot, turning this off here will disable it for this workspace
+  "github.copilot.enable": { "workspace": false },
+  "github.copilot.inlineSuggest.enable": { "workspace": false }
+}
