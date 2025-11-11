@@ -2,7 +2,7 @@ name: Build Script Workflow
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main,dev ]
 
 jobs:
   build:
