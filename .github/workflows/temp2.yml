@@ -1,50 +1,22 @@
-name: Configure workflows to run for webhook events (e.g., check_run, check_suite, deployment, etc.)
+name: Auto Run Tests on Pull Request
 on:
-  check_run:
-    types: [completed]  # Trigger when a check completes
-  check_suite:
-    types: [completed]
-  # deployment:
-  #   types: [created]
-  # deployment_status:
-  #   types: [success, failure]
-  issue_comment:
-    types: [created]
-  repository_dispatch:
-    types: [custom-event]
-
+  pull_request:
+    branches:
+      - main
 jobs:
-  notify-check:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo "Check Run Completed!"
-          echo "Check Conclusion: ${{ github.event.check_run.conclusion }}"
-  notify-suite:
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "Check Suite Completed!"
-          echo "Conclusion: ${{ github.event.check_suite.conclusion }}"
-  deployment-job:
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-         echo "Deployment Created! Environment: ${{ github.event.deployment.environment }}"
-         
-  notify-status:
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "Deployment Status Changed!"
-          echo "Status: ${{ github.event.deployment_status.state }}"
-  comment-job:
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "New comment on issue #${{ github.event.issue.number }}"
-          echo "Comment: ${{ github.event.comment.body }}"
-  dispatch-job:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Repository dispatch event received!"
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: nodejs setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: dependencies
+        run: npm ci 
+      - name: comment
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: "✅ All tests passed for this PR!"
