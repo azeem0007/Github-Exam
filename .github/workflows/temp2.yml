@@ -2,7 +2,7 @@ name: Use GITHUB_TOKEN Example
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main,dev]
 
 jobs:
   comment:
