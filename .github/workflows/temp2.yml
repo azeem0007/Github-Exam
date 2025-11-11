@@ -10,12 +10,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Comment on PR
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: "✅ Workflow ran successfully!"
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: token
         run: echo "${{ secrets.GITHUB_TOKEN }}"
+
