@@ -38,7 +38,7 @@ jobs:
             echo "jujueeeee" > tester.txt
       
       - name: upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: yoyo
           path: tester.txt
@@ -52,7 +52,7 @@ jobs:
       - name: to use outputs from other jobss
         run: echo "${{needs.build.outputs.new_text}}"
       - name: download arti
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: yoyo
       - name: ls
