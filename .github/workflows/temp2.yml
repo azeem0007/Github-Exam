@@ -1,30 +1,28 @@
-name: to use OIDC and a cloud provider
+name: to use cache
 on:
   push:
-    tags:
-      - 'v*'
+    branches: [main ,dev]
+
 jobs:
   build:
+    env:
+      ACTIONS_STEP_DEBUG: true
     runs-on:  ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
     steps:
-      - name: checkout the code
+      - name: checkout code
         uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: setup nodejs
+        uses: actions/setup-node@v6
         with:
-          python-version: '3.11'
-      - name: auth to aws usinf OPENID CONNECT
-        uses: aws-actions/configure-aws-credentials@v1
+          node-version: 24
+      - name: cache dependencies
+        uses: actions/cache@v3
         with:
-          role-to-assume: arn:aws:iam::618480995889:role/test-admin-access
-          aws-region: us-east-1
-      - name: Build the project
-        run: |
-          mkdir -p dist
-          zip -r dist/app-${{ github.ref_name }}.zip ./src/ 
-      - name: upload to s3
-        run: |
-          aws s3 cp dist/app-${{ github.ref_name }}.zip s3://azeem-bukcet-7301245/releases/
+          path: ~/.npm
+          key:  cache-node-${{hashFiles('**/package-lock.json')}}
+          restore-keys: |
+            cache-node-
+      - name: init
+        run: npm ci
+      
+      
