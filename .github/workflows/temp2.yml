@@ -1,23 +1,12 @@
-name: to use matrix 
-on: 
+name: to call another wf
+on:
   push:
-    branches: [dev,main]
+    branches: [dev, main]
 jobs:
   build:
-    continue-on-error: true
-    strategy:
-      max-parallel: 3
-      matrix:
-        os: [ ubuntu-latest,macos-latest,windows-latest]
-        node-version: [18,16,20]
-        exclude:
-          - os: macos-latest
-            node-version: 20
-    runs-on:  ${{matrix.os}}
+    runs-on:  ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
-      - name: setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{matrix.node-version}}
+        uses: actions/checkout@v4
+      - name: call workflow
+        uses: ./.github/workflows/pythonci.yml
