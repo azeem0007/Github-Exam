@@ -9,4 +9,6 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: call workflow
-        uses: ./.github/workflows/pythonci.yml
+        uses: ./.github/workflows/
+        with:
+          python-version: 3.11
