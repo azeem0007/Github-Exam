@@ -1,10 +1,13 @@
-name: to use cachee
+name: to use cachee , ouputs, artifacts
 on:
   push:
     branches: [main ,dev]
 
 jobs:
   build:
+    outputs:
+      sample_txt: ${{steps.cache-npm.outputs.cache-hit}}
+      new_text: ${{steps.ad.outputs.random}}
     env:
       ACTIONS_STEP_DEBUG: true
     runs-on:  ubuntu-latest
@@ -22,10 +25,22 @@ jobs:
           path: ~/.npm
           key: cache-node-${{hashFiles('**/package-lock.json')}}
           restore-keys: cache-node-
-
       - name: init
         if: steps.cache-npm.outputs.cache-hit != 'true'
         run: npm ci
+      - name: one more output
+        id: ad
+        run:  |
+            echo  "random=hello hi from ${{github.actor}}" >> $GITHUB_OUTPUT
+
+  test:
+    runs-on:  ubuntu-latest
+    needs: build
+    steps:
+      - name: to use outputs from other job
+        run: echo "${{needs.build.outputs.sample_txt}}"
+      - name: to use outputs from other jobss
+        run: echo "${{needs.build.outputs.new_text}}"
 
             
             
