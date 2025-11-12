@@ -1,14 +1,10 @@
-name: to call another wf
+name: call python workflow
 on:
   push:
     branches: [dev, main]
+
 jobs:
-  build:
-    runs-on:  ubuntu-latest
-    steps:
-      - name: checkout
-        uses: actions/checkout@v4
-      - name: call workflow
-        uses: ./.github/workflows/python.yml
-        with:
-          python-version: 3.11
+  call-python-workflow:
+    uses: ./.github/workflows/python.yml
+    with:
+      python-version: '3.11'
