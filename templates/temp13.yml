@@ -1,0 +1,31 @@
+name: to use OIDC and a cloud provider
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  build:
+    runs-on:  ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: checkout the code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: auth to aws usinf OPENID CONNECT
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::618480995889:role/tester
+          aws-region: us-east-1
+        
+      - name: Build the project
+        run: |
+          mkdir -p dist
+          zip -r dist/app-${{ github.ref_name }}.zip ./src/ 
+      - name: upload to s3
+        run: |
+          aws s3 cp dist/app-${{ github.ref_name }}.zip s3://azeem-bukcet-7301245/releases/
