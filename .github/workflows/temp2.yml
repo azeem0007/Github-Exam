@@ -1,4 +1,4 @@
-name: to use cache
+name: to use cachee
 on:
   push:
     branches: [main ,dev]
