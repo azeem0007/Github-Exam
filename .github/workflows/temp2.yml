@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     environment:
-      name: production
+      name: prod
     outputs:
       sample_txt: ${{steps.cache-npm.outputs.cache-hit}}
       new_text: ${{steps.ad.outputs.random}}
