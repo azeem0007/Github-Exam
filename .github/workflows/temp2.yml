@@ -16,15 +16,16 @@ jobs:
         with:
           node-version: 24
       - name: cache dependencies
-        id: cacheer
+        id: cache-npm
         uses: actions/cache@v3
         with:
           path: ~/.npm
-          key:  cache-node-${{hashFiles('**/package-lock.json')}}
-          restore-keys: |
-            cache-node-
+          key: cache-node-${{hashFiles('**/package-lock.json')}}
+          restore-keys: cache-node-
+
       - name: init
-        if: ${{steps.cacheer.outputs.cache-hit}} != 'true'
+        if: steps.cache-npm.outputs.cache-hit != 'true'
         run: npm ci
-      
-      
+
+            
+            
