@@ -1,0 +1,15 @@
+name: custom docker container action 
+description: example
+inputs:
+    name:
+        description: name to print
+        required: true
+        default: 'azeem'
+outputs:
+    message:
+        description: output from shell script
+runs:
+  using: 'docker'
+  image:  'Dockerfile'
+  args:
+    - ${{ inputs.name }}

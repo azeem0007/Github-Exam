@@ -1,0 +1,10 @@
+name: call python workflow
+on:
+  push:
+    branches: [dev, main]
+
+jobs:
+  call-python-workflow:
+    uses: ./.github/workflows/python.yml
+    with:
+      python-version: '3.11'

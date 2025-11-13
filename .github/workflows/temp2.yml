@@ -1,10 +1,18 @@
-name: call python workflow
+name: using a cdocker container action
 on:
   push:
-    branches: [dev, main]
+    branches: [dev,main]
 
 jobs:
-  call-python-workflow:
-    uses: ./.github/workflows/python.yml
-    with:
-      python-version: '3.11'
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkoutcode
+        uses: actions/checkout@v4
+      - name: using docker container action
+        id: dockeraction
+        uses: ./.github/actions/
+      - name: output of docker container
+        run: |
+          echo "the ouput from the container is ${{steps.dockeraction.outputs.message}}"
+
