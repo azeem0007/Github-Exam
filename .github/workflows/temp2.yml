@@ -5,14 +5,8 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     steps:
       - name: checkoutcode
-        uses: actions/checkout@v4
-      - name: using docker container action
-        id: dockeraction
-        uses: ./.github/actions/docker/
-      - name: output of docker container
-        run: |
-          echo "the ouput from the container is ${{steps.dockeraction.outputs.message}}"
+        run:  echo "hi"
 
