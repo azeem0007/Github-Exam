@@ -3,10 +3,19 @@ on:
   push:
     branches: [dev,main]
 
+
 jobs:
   build:
-    runs-on: [self-hosted]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [14, 16]
+        include:
+          - os: macos-latest
+            node: 18
+          - os: ubuntu-latest
+            node: 14
     steps:
-      - name: checkoutcode
-        run:  echo "hi"
-
+    - name: hi
+      run: echo "hi"
