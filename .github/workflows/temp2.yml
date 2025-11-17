@@ -23,6 +23,7 @@ jobs:
       with:
         node-version: ${{matrix.node}}
   test:
+    needs: build
     runs-on:  ubuntu-latest
     steps:
       - name: asas
